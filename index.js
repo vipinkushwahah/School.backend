@@ -1,10 +1,27 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
+const mongoose = require('mongoose'); // Import mongoose to connect to MongoDB
 
+// Initialize Express app
 const app = express();
 app.use(cors());
+
+// MongoDB URI and PORT from environment variables
+const MONGO_URI = process.env.MONGO_URI;
+const PORT = process.env.PORT || 5001;  // Default to 5001 if PORT is not defined
+
+// Connect to MongoDB
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log('MongoDB connection error:', err));
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -97,6 +114,7 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log('Server running on http://localhost:3001');
+// Start the server on the specified port from the environment variables
+server.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
