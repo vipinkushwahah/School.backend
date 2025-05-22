@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { createUserSchema, updateUserSchema } from '../validators/userValidator';
 import { createUser, updateUser, getUserById, deleteUser, getAllUsers, findUserByEmailAndPhone } from '../services/userService';
 import { sendEmail } from '../utils/emailService'; // Utility to send emails
+import { generateToken } from '../auth/authUtils';
 
 async function createUserController(req: Request, res: Response, next: any): Promise<any> {
   try {
@@ -13,16 +14,10 @@ async function createUserController(req: Request, res: Response, next: any): Pro
 
     const user = await createUser(req.body);
 
-    // Send a welcome email
-    // await sendEmail({
-    //   to: user.email,
-    //   subject: 'Welcome to Our Platform',
-    //   text: `Hi ${user.name}, welcome to our platform!`,
-    // });
+    // Generate a token for the user
+    const token = generateToken({ id: user._id, email: user.email });
 
-    console.log('User createdassd:', user);
-    // return user
-      res.status(201).send(user);
+    res.status(201).send({ user, token });
   } catch (err: any) {
     console.log(err);
     if (err.code === 11000) {

@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { validateToken } from '../auth';
+import { validateToken } from '../middleware/authMiddleware';
 import {
     createRoleController,
     getRoleController,
