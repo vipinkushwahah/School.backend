@@ -6,6 +6,6 @@ export interface IRole extends Document {
 
 const roleSchema = new Schema<IRole>({
   name: { type: String, required: true, unique: true },
-});
+}, {timestamps: true});
 
 export default mongoose.model<IRole>('Role', roleSchema);
